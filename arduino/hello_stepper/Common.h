@@ -41,7 +41,8 @@
 // Version 0.7.3: Issue with tag system, trying version bump
 // Version 0.7.4: Put arm in drive-off mode when in runstop
 // Version 0.7.5: Bug fix with 0.7.4 not allowing motors to calibrate
-#define FIRMWARE_VERSION_HR "Stepper.v0.7.5p5"
+// Version 0.7.6: Bug fix with 0.7.5 traj control enduces stutter due to the priority of adc interupts and the floating point math assoicated with it
+#define FIRMWARE_VERSION_HR "Stepper.v0.7.6p5"
 
 /////////////////////////////////////////////////////////////////
 
