@@ -54,14 +54,6 @@ void AnalogManager::step()
 {
   if (!adc_results_ready)
     return;
-
-  // if (first_filter)
-  // {
-  //   voltage = adcResult[IDX_ANA_V_BATT];
-  //   first_filter=false;
-  // }
-
-  // voltage = voltage * voltage_LPFa +  voltage_LPFb* adcResult[IDX_ANA_V_BATT];
   voltage = adcResult[IDX_ANA_V_BATT];
 }
 
