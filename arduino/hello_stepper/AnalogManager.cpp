@@ -27,7 +27,7 @@ AnalogManager::AnalogManager(){
   voltage_LPFa = 1.0; 
   voltage_LPFb = 0.0;
   first_filter=1;
-  first_read_done=0;
+  adc_results_ready=0;
   first_config=1;
   adc_input_id=0;
 
@@ -52,16 +52,9 @@ void AnalogManager::update_config(Gains * cfg_new, Gains * cfg_old)
 
 void AnalogManager::step()
 {
-  if (!first_read_done)
+  if (!adc_results_ready)
     return;
-
-  if (first_filter)
-  {
-    voltage = adcResult[IDX_ANA_V_BATT];
-    first_filter=false;
-  }
-
-  voltage = voltage * voltage_LPFa +  voltage_LPFb* adcResult[IDX_ANA_V_BATT];
+  voltage = adcResult[IDX_ANA_V_BATT];
 }
 
 void AnalogManager::setupADC()
@@ -76,7 +69,7 @@ void AnalogManager::setupADC()
                    ADC_CTRLB_FREERUN;                // Set the ADC to free run
  
   while(ADC->STATUS.bit.SYNCBUSY);                   // Wait for synchronization 
-  NVIC_SetPriority(ADC_IRQn, 0);    // Set the Nested Vector Interrupt Controller (NVIC) priority for the ADC to 0 (highest)
+  NVIC_SetPriority(ADC_IRQn, 2);    // Set the Nested Vector Interrupt Controller (NVIC) priority for the ADC to 0 (highest)
   NVIC_EnableIRQ(ADC_IRQn);         // Connect the ADC to Nested Vector Interrupt Controller (NVIC)
   ADC->INTENSET.reg = ADC_INTENSET_RESRDY;           // Generate interrupt on result ready (RESRDY)
   ADC->CTRLA.bit.ENABLE = 1;                         // Enable the ADC
@@ -99,7 +92,7 @@ void ADC_Handler()
     if (analog_manager.adc_input_id==NUM_ADC_INPUTS)
     {
       analog_manager.adc_input_id=0;
-      analog_manager.first_read_done=1;
+      analog_manager.adc_results_ready=1;
     }
     ADC->CTRLA.bit.ENABLE = 0;                     // Disable the ADC
     while(ADC->STATUS.bit.SYNCBUSY);               // Wait for synchronization

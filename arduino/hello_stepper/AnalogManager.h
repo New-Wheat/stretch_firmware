@@ -26,11 +26,11 @@ class AnalogManager {
 
     float voltage_LPFa; 
     float voltage_LPFb;
-    float voltage;
+    uint16_t voltage;
     volatile uint16_t adcResult[NUM_ADC_INPUTS] = {};         // ADC results buffer
     uint8_t mux_map[NUM_ADC_INPUTS];
     uint8_t adc_input_id;
-    bool first_read_done;
+    volatile bool adc_results_ready;
   private:
     bool first_filter;
     bool first_config;

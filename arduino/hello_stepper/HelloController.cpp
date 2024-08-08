@@ -179,22 +179,6 @@ float get_voltage_calibrated(float raw)
  return (raw*RAW_TO_VOLTAGE)-0.3; //0.3 is needed to account for leakage current of TVS
 }
 
-//This returns an effort value (-255 to 255) that is normalized by the bus voltage
-//such that as the bus voltage drops, the estimate of effort "force" applied to the outside world
-//goes down for a given current
-//Only works for VARIANT_3 and later boards
-
-float current_to_effort_v_norm(float x)
-{
-    float e=current_to_effort(x);
-   if (BOARD_VARIANT>=3 && voltage_calibrated!=0)
-   {
-    return max(-255,min(255,e*voltage_calibrated/NOMINAL_BUS_VOLTAGE));
-   }
-   else
-    return e;
-}
-
 float effort_to_current(float e)
 {
   return (e*k_e2c);
@@ -555,7 +539,8 @@ void update_status()
   if (BOARD_VARIANT >= 3)
   {
     stat.voltage=analog_manager.voltage;
-    voltage_calibrated=get_voltage_calibrated(stat.voltage);
+    // stat.voltage = 0;
+    // voltage_calibrated=get_voltage_calibrated(stat.voltage);
   }
   else
   {
@@ -905,8 +890,8 @@ void stepHelloController()
         cmd.stiffness=cmd_in.stiffness;
         cmd.i_contact_pos =cmd_in.i_contact_pos;
         cmd.i_contact_neg =cmd_in.i_contact_neg;
-        g_eff_pos=current_to_effort_v_norm(abs(cmd.i_contact_pos));
-        g_eff_neg=current_to_effort_v_norm(-1*abs(cmd.i_contact_neg));
+        g_eff_pos=current_to_effort(abs(cmd.i_contact_pos));
+        g_eff_neg=current_to_effort(-1*abs(cmd.i_contact_neg));
       
         //If mode has changed manage smooth switchover
         if (cmd.mode!=mode_last)
@@ -1437,8 +1422,8 @@ void setupMGInterrupts() {  // configure the controller interrupt
 //Jitter on commutation seems to be OK for performance
 
 
-  NVIC_SetPriority(TC4_IRQn, 1);      //1        see https://github.com/arduino/ArduinoCore-samd/blob/master/cores/arduino/cortex_handlers.c#L84
-  NVIC_SetPriority(TC5_IRQn, 2);      //2        
+  NVIC_SetPriority(TC4_IRQn, 0);      //0        see https://github.com/arduino/ArduinoCore-samd/blob/master/cores/arduino/cortex_handlers.c#L84
+  NVIC_SetPriority(TC5_IRQn, 1);      //1        
 
   // Enable InterruptVector
   NVIC_EnableIRQ(TC4_IRQn);
