@@ -39,6 +39,7 @@ uint8_t Red(uint32_t color){return (color >> 16) & 0xFF;}
 uint8_t Green(uint32_t color){return (color >> 8) & 0xFF;}
 uint8_t Blue(uint32_t color){return color & 0xFF;}
 
+
 //Slew a pixel color from bg to fg and back over duration_ms
 class SlewPixel
 {
@@ -123,6 +124,7 @@ class LightBarPatterns : public Adafruit_NeoPixel_ZeroDMA
     
     uint32_t Color1, Color2;  // What colors are in use
     SlewPixel p0, p1, p2, p3;
+    uint32_t prev_scan_color; //needed for color scan function
   
     void Off()
     {
@@ -144,6 +146,16 @@ class LightBarPatterns : public Adafruit_NeoPixel_ZeroDMA
 
   bool ColoredScanUpdate(uint32_t color_bg,uint32_t color_fg,float duration_ms)
   {
+    //Resets scan color, if a different color was set before this
+    //function was called it will reset to ensure new color is set
+    if (prev_scan_color != color_fg)
+    {
+      p0.configured = false;
+      p1.configured = false;
+      p2.configured = false;
+      p3.configured = false;
+    }
+    
     if(!p0.configured)
       p0.Configure(color_bg, color_fg, duration_ms, 0.0, 0, 1.0);
     p0.Step();
@@ -165,12 +177,13 @@ class LightBarPatterns : public Adafruit_NeoPixel_ZeroDMA
     setPixelColor(2, Color(p2.r,p2.g,p2.b));
     setPixelColor(3, Color(p3.r,p3.g,p3.b));
     show();
-
+    prev_scan_color = color_fg;
+    
   }
 
 ////////////////////////////////////////////////////////////////////// 
   
-  void ColoredBatteryLevel(float v_bat, float v_bat_min, float v_bat_max,bool runstop_on, bool runstop_led_on,bool charger_on)
+  void ColoredBatteryLevel(float v_bat, float v_bat_min, float v_bat_max,bool runstop_on, bool runstop_led_on,bool charger_on, bool charger_plugged_in)
   {
     if (runstop_led_on || !runstop_on)
     {
@@ -216,11 +229,20 @@ class LightBarPatterns : public Adafruit_NeoPixel_ZeroDMA
       uint8_t r = ((float)(Red(c2)-Red(c1)))*interp+Red(c1);
       uint8_t g = ((float)(Green(c2)-Green(c1)))*interp+Green(c1);
       uint8_t b = ((float)(Blue(c2)-Blue(c1)))*interp+Blue(c1);
-      if (charger_on && !runstop_on)
+
+      //if charger is charging, charger cable is properly seated and runstop is off 
+      if (charger_on && !runstop_on && charger_plugged_in)
       {
         ColoredScanUpdate(Color(PX_OFF),Color(r,g,b),1000);
-      } 
-      else
+      }
+      //if charger is charging, charger cable is NOT properly seated and runstop is off 
+      else if (charger_on && !runstop_on && !charger_plugged_in)
+      {
+        ColoredScanUpdate(Color(PX_OFF),Color(PX_RED),300);
+      }
+
+      //if charger is not charging or runstop is on
+      else if (!charger_on || runstop_on)
       {
         ColorSet(Color(r,g,b));
         show();
@@ -259,20 +281,20 @@ void LightBarManager::start_test()
   running_test=true;
 }
 
-void LightBarManager::step(bool boot_detected, bool runstop_on, bool charger_on, bool charging_required, bool runstop_led_on,float v_bat) 
+void LightBarManager::step(bool boot_detected, bool runstop_on, bool charger_on, bool charging_required, bool runstop_led_on,float v_bat, bool charger_plugged_in) 
 {
   if (pixels)
   {
       if (running_test)
       {
-        pixels->ColoredBatteryLevel(test_voltage, V_BAT_MIN, V_BAT_MAX, runstop_on, runstop_led_on, charger_on );
+        pixels->ColoredBatteryLevel(test_voltage, V_BAT_MIN, V_BAT_MAX, runstop_on, runstop_led_on, charger_on, charger_plugged_in);
         test_voltage=max(9.0,test_voltage-0.005);
         if (test_voltage==9.0)
           running_test=false;
       }
       else
       {
-        pixels->ColoredBatteryLevel(v_bat, V_BAT_MIN, V_BAT_MAX, runstop_on, runstop_led_on, charger_on );
+        pixels->ColoredBatteryLevel(v_bat, V_BAT_MIN, V_BAT_MAX, runstop_on, runstop_led_on, charger_on, charger_plugged_in);
       }
   }
 }
