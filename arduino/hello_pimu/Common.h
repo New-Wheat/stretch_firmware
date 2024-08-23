@@ -35,14 +35,10 @@
 // Version 0.6.2: added interrupts for imu data, added writing to system orientation record for IMU orientation to match older robots
 // Version 0.6.3: incorporting charging detection class
 // Version 0.7.0: added is_charger_charging state to pimu status
-<<<<<<< HEAD
 // Version 0.7.1  added tilt detection feature using cliff sensor and IMU data
 // Version 0.8.0  Protocol change for over_tilt_type
-#define FIRMWARE_VERSION "Pimu.v0.8.0p6"
-=======
-// Version 0.7.1: added different color bar sequence for when the charger is supplying current to the battery, but not properly seated
-#define FIRMWARE_VERSION "Pimu.v0.7.1p5"
->>>>>>> 59c50fc (modified:   ChargerManager.cpp)
+// Version 0.8.1 Added feature to detect when the charger cable is not seated correctly in the charger port
+#define FIRMWARE_VERSION "Pimu.v0.8.1p6"
 
 #define FS 100 //Loop rate in Hz for TC5
 
