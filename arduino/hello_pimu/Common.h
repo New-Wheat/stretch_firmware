@@ -35,7 +35,9 @@
 // Version 0.6.2: added interrupts for imu data, added writing to system orientation record for IMU orientation to match older robots
 // Version 0.6.3: incorporting charging detection class
 // Version 0.7.0: added is_charger_charging state to pimu status
-#define FIRMWARE_VERSION "Pimu.v0.7.0p5"
+// Version 0.7.1  added tilt detection feature using cliff sensor and IMU data
+// Version 0.8.0  Protocol change for over_tilt_type
+#define FIRMWARE_VERSION "Pimu.v0.8.0p6"
 
 #define FS 100 //Loop rate in Hz for TC5
 
@@ -189,6 +191,7 @@ struct __attribute__ ((packed)) Pimu_Status{
   uint16_t bump_event_cnt;
   float debug;
   float current_charge;
+  uint8_t over_tilt_type;
 
 };
 
