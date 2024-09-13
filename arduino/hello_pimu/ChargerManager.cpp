@@ -2,7 +2,6 @@
 #include "TimeManager.h"
 #include "Common.h"
 
-
 unsigned long t_charger_last=0;
 
 float v1 = 0.0;
@@ -12,6 +11,7 @@ float voltage_change = 0.0;
 float sys_curr_array[10] = {};
 float sys_volt_array[10] = {};
 int curr_cnt = 0;
+
 
 //charging_sts_flag is if charger is connected 
 
@@ -70,8 +70,6 @@ void ChargerManager::unplug_check(float v, float c, float cc)
 			}
 		}
 
-
-
 		sys_curr_array[0] = sys_curr_array[9];
 		sys_volt_array[0] = sys_volt_array[9];
 		for (int i = 1; i < 10; i++)
@@ -93,16 +91,6 @@ bool ChargerManager::step(float vbat, float sys_current, float charge_current, i
 	if (t -  t_charger_last > CHARGER_SAMPLE_RATE)
 	{
 		t_charger_last = t;
-
-		//Charger Connected Pin LOW Charger Not Connected
-		if (digitalRead(CHARGER_CONNECTED) == LOW)
-		{
-			v1 = vbat;
-			hotplug_sts_flag = true;
-			charging_sts_flag = false;
-			charger_plugged_in_flag = false;
-			unplug_sts_flag = true;
-		}
 
 		//Charger Connected Pin HIGH Charger Connected
 		if (digitalRead(CHARGER_CONNECTED) == HIGH)
@@ -134,6 +122,26 @@ bool ChargerManager::step(float vbat, float sys_current, float charge_current, i
 			if (board_variant < 3)
 			{
 				hotplug_check(vdiff);
+			}
+			
+		}
+
+		//Charger Connected Pin LOW Charger Not Connected
+		if (digitalRead(CHARGER_CONNECTED) == LOW)
+		{
+			v1 = vbat;
+			hotplug_sts_flag = true;
+			charging_sts_flag = false;
+			charger_plugged_in_flag = false;
+			unplug_sts_flag = true;
+			
+			//Condition to check if the cable is properlly seated in the connector
+			if (charge_current >= 0.2)
+			{
+
+				charging_sts_flag = true;
+				charger_plugged_in_flag = false;
+
 			}
 			
 		}

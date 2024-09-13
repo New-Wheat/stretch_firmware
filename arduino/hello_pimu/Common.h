@@ -37,7 +37,8 @@
 // Version 0.7.0: added is_charger_charging state to pimu status
 // Version 0.7.1  added tilt detection feature using cliff sensor and IMU data
 // Version 0.8.0  Protocol change for over_tilt_type
-#define FIRMWARE_VERSION "Pimu.v0.8.0p6"
+// Version 0.8.1 Added feature to detect when the charger cable is not seated correctly in the charger port
+#define FIRMWARE_VERSION "Pimu.v0.8.1p6"
 
 #define FS 100 //Loop rate in Hz for TC5
 

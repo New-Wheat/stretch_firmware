@@ -203,7 +203,7 @@ void stepPimuController()
   runstop_manager.step(&cfg);
   beep_manager.step();
   analog_manager.step(&stat, &cfg);
-  light_bar_manager.step(state_boot_detected, runstop_manager.state_runstop_event, state_charger_is_charging, state_low_voltage_alert, runstop_manager.runstop_led_on, RAW_TO_V(analog_manager.voltage));
+  light_bar_manager.step(state_boot_detected, runstop_manager.state_runstop_event, state_charger_is_charging, state_low_voltage_alert, runstop_manager.runstop_led_on, RAW_TO_V(analog_manager.voltage), state_charger_connected);
   update_fan();  
   update_imu();
   update_board_reset();
@@ -442,9 +442,9 @@ void update_voltage_monitor()
 {
   if (BOARD_VARIANT >= 1)
   {
+    
     state_charger_is_charging = charger_manager.step(RAW_TO_V(analog_manager.voltage), RAW_TO_I(analog_manager.current_efuse), RAW_TO_CHRG_I(analog_manager.current_charge) , BOARD_VARIANT);
     state_charger_connected = charger_manager.charger_plugged_in_flag;
-    
     
     if(analog_manager.voltage<low_voltage_alert) //dropped below
       {
