@@ -124,7 +124,8 @@ class LightBarPatterns : public Adafruit_NeoPixel_ZeroDMA
     
     uint32_t Color1, Color2;  // What colors are in use
     SlewPixel p0, p1, p2, p3;
-    uint32_t prev_scan_color; //needed for color scan function
+    bool charger_error_sts; //needed for color scan function
+    bool prev_charger_error_sts;
   
     void Off()
     {
@@ -148,13 +149,15 @@ class LightBarPatterns : public Adafruit_NeoPixel_ZeroDMA
   {
     //Resets scan color, if a different color was set before this
     //function was called it will reset to ensure new color is set
-    if (prev_scan_color != color_fg)
+
+    if (charger_error_sts != prev_charger_error_sts)
     {
       p0.configured = false;
       p1.configured = false;
       p2.configured = false;
       p3.configured = false;
     }
+    prev_charger_error_sts = charger_error_sts;
     
     if(!p0.configured)
       p0.Configure(color_bg, color_fg, duration_ms, 0.0, 0, 1.0);
@@ -177,7 +180,7 @@ class LightBarPatterns : public Adafruit_NeoPixel_ZeroDMA
     setPixelColor(2, Color(p2.r,p2.g,p2.b));
     setPixelColor(3, Color(p3.r,p3.g,p3.b));
     show();
-    prev_scan_color = color_fg;
+  
     
   }
 
@@ -233,11 +236,13 @@ class LightBarPatterns : public Adafruit_NeoPixel_ZeroDMA
       //if charger is charging, charger cable is properly seated and runstop is off 
       if (charger_on && !runstop_on && charger_plugged_in)
       {
+        charger_error_sts = false;
         ColoredScanUpdate(Color(PX_OFF),Color(r,g,b),1000);
       }
       //if charger is charging, charger cable is NOT properly seated and runstop is off 
       else if (charger_on && !runstop_on && !charger_plugged_in)
       {
+        charger_error_sts = true;
         ColoredScanUpdate(Color(PX_OFF),Color(PX_RED),300);
       }
 

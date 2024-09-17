@@ -38,7 +38,8 @@
 // Version 0.7.1  added tilt detection feature using cliff sensor and IMU data
 // Version 0.8.0  Protocol change for over_tilt_type
 // Version 0.8.1 Added feature to detect when the charger cable is not seated correctly in the charger port
-#define FIRMWARE_VERSION "Pimu.v0.8.1p6"
+// Version 0.8.2 Bug Fix to the light bar flickering due to the charger detection feature when the cable is not fully seated
+#define FIRMWARE_VERSION "Pimu.v0.8.2p6"
 
 #define FS 100 //Loop rate in Hz for TC5
 
