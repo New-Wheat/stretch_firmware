@@ -136,7 +136,7 @@ bool ChargerManager::step(float vbat, float sys_current, float charge_current, i
 			unplug_sts_flag = true;
 			
 			//Condition to check if the cable is properlly seated in the connector
-			if (charge_current >= 0.2)
+			if (charge_current > 0.85)
 			{
 
 				charging_sts_flag = true;

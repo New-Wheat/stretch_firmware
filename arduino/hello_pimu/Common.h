@@ -39,7 +39,8 @@
 // Version 0.8.0  Protocol change for over_tilt_type
 // Version 0.8.1 Added feature to detect when the charger cable is not seated correctly in the charger port
 // Version 0.8.2 Bug Fix to the light bar flickering due to the charger detection feature when the cable is not fully seated
-#define FIRMWARE_VERSION "Pimu.v0.8.2p6"
+// Version 0.8.3 Bug Fix incrased the charger current threshold when the cable is not seated in the port from 0.2 to 0.85 to account for ADC Noise
+#define FIRMWARE_VERSION "Pimu.v0.8.3p6"
 
 #define FS 100 //Loop rate in Hz for TC5
 
