@@ -84,6 +84,14 @@
 //Note, to serialize to Linux must pack structs given use of sizeof()
 //See https://arduino.stackexchange.com/questions/9899/serial-structure-data-transfer-between-an-arduino-and-a-linux-pc
 
+struct __attribute__ ((packed)) Sensor_Status{
+  float temperature;
+  float humidity;
+  uint16_t TVOC;
+  uint16_t eCO2;
+  uint8_t state;
+};
+
 struct __attribute__ ((packed)) Wacc_Command{
   uint8_t d2;
   uint8_t d3;
@@ -100,6 +108,7 @@ struct __attribute__ ((packed)) Wacc_Config{
 };
 
 struct __attribute__ ((packed)) Wacc_Status{
+  Sensor_Status sensor; //Sensor values
   float ax;	//Accelerometer AX
   float ay;	//Accelerometer AY
   float az;	//Accelerometer AZ

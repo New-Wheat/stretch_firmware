@@ -14,6 +14,7 @@
 #include <Arduino.h>
 #include "Wacc.h"
 #include "Accel.h"
+#include "Sensor.h"
 #include "TimeManager.h"
 #include "TraceManager.h"
 
@@ -206,6 +207,7 @@ if (dirty_command)
   else
     digitalWrite(D3, LOW);
 
+  wacc_sensor.updateSensorStatus(stat.sensor);
   stat.ax=accel_gravity_scale*(stat.ax * accel_LPFa + accel_LPFb*ax);
   stat.ay=accel_gravity_scale*(stat.ay * accel_LPFa + accel_LPFb*ay);
   stat.az=accel_gravity_scale*(stat.az * accel_LPFa + accel_LPFb*az);

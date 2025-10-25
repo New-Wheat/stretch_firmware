@@ -14,12 +14,14 @@
 #include "Transport.h"
 #include "Wacc.h"
 #include "Accel.h"
+#include "Sensor.h"
 
 
 void setup()        // This code runs once at startup
 {     
   setupBoardVariants();
   setupAccel();
+  setupSensor();
   SerialUSB.begin(2000000);
   setupWacc();          
   setupTransport();
@@ -27,5 +29,6 @@ void setup()        // This code runs once at startup
 
 void loop()
 {
+  wacc_sensor.pollSensorStatus();
   stepWaccRPC();
 }
