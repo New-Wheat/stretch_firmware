@@ -24,11 +24,11 @@ uint32_t getAbsoluteHumidity(float temperature, float humidity) {
 }
 
 void Sensor::timeCounter() {
-  counter++;
-  counter %= 20;
   // Update sensors at 0.5HZ
-  if (counter == 1) {
+  uint32_t now = millis();
+  if (now - lastReadTime > 2000) {
     state &= ~SENSOR_STANDBY;
+    lastReadTime = now;
     return;
   }
   state |= SENSOR_STANDBY;

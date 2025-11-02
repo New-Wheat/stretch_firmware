@@ -17,11 +17,11 @@ class Sensor{
     uint16_t tvoc;  // ppb
     uint16_t eco2;  // ppm
     uint8_t state;
-    uint8_t counter;
+    uint32_t lastReadTime;
     void timeCounter();
 
   public:
-    Sensor(): temper(0), humid(0), tvoc(0), eco2(0), state(0), counter(0) {}
+    Sensor(): temper(0), humid(0), tvoc(0), eco2(0), state(0), lastReadTime(0) {}
     void pollSensorStatus();
     void updateSensorStatus(Sensor_Status&);
 };
