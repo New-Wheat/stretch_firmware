@@ -139,13 +139,13 @@ void stepWaccRPC()
 {
   toggle_led(500);
   stepTransport(handleNewRPC);
-  // If accel work was requested from TC5 ISR, handle it here (non-ISR context)
   if (accel_tick) {
     noInterrupts();
     accel_tick = false;
     interrupts();
     stepAccel();
   }
+  wacc_sensor.pollSensorStatus();
   resetWDT();
 }
 
@@ -261,10 +261,6 @@ if (dirty_command)
  
 }
 
-// void stepWaccController_70Hz()
-// {
-//     stepAccel();
-// }
 //////////////////////////////////////////////////////
 bool led_on=false;
 unsigned long t_toggle_last=0;

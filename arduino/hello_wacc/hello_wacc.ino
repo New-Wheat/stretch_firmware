@@ -24,13 +24,9 @@ void setup()        // This code runs once at startup
   SerialUSB.begin(2000000);
   setupWacc();
   setupTransport();
-
-  delay(20);        // Delay for a bit for better stability
-  wacc_sensor.pollSensorStatus();
 }
 
 void loop()
 {
   stepWaccRPC();
-  wacc_sensor.pollSensorStatus();
 }
