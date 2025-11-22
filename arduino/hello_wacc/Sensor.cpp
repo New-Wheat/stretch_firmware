@@ -64,7 +64,7 @@ void Sensor::pollSensorStatus() {
   }
 }
 
-void Sensor::updateSensorStatus(Sensor_Status &status) {
+void Sensor::updateSensorStatus(Sensor_Status &status) const {
   if (!(state & SENSOR_DHT_FAIL)) {
     status.temperature = temper;
     status.humidity = humid;

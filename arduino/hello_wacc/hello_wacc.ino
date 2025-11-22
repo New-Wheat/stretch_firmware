@@ -16,19 +16,21 @@
 #include "Accel.h"
 #include "Sensor.h"
 
-
 void setup()        // This code runs once at startup
-{     
+{
   setupBoardVariants();
   setupAccel();
   setupSensor();
   SerialUSB.begin(2000000);
-  setupWacc();          
+  setupWacc();
   setupTransport();
+
+  delay(20);        // Delay for a bit for better stability
+  wacc_sensor.pollSensorStatus();
 }
 
 void loop()
 {
-  wacc_sensor.pollSensorStatus();
   stepWaccRPC();
+  wacc_sensor.pollSensorStatus();
 }

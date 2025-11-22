@@ -3,7 +3,7 @@
 
 #include "Common.h"
 
-#define DHTPIN D3
+#define DHTPIN D1
 #define DHTTYPE DHT11
 
 #define SENSOR_DHT_FAIL (1L)
@@ -22,8 +22,9 @@ class Sensor{
 
   public:
     Sensor(): temper(0), humid(0), tvoc(0), eco2(0), state(0), lastReadTime(0) {}
+    inline uint8_t getState() const { return state; }
     void pollSensorStatus();
-    void updateSensorStatus(Sensor_Status&);
+    void updateSensorStatus(Sensor_Status&) const;
 };
 
 extern Sensor wacc_sensor;
