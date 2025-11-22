@@ -24,5 +24,6 @@ void onAccelInt2();
 void setAccelRange(uint8_t r);
 void setSingleTapSensitivity(uint8_t dur, uint8_t thresh);
 extern uint32_t accel_debug;
+extern volatile bool accel_tick;
 
 #endif

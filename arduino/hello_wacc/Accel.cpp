@@ -28,6 +28,9 @@ float ay=0;
 float az=0;
 uint32_t accel_debug;
 
+// Flag set by TC5 ISR to request accel processing in main context
+volatile bool accel_tick = false;
+
 uint32_t single_tap_count=0;
 uint32_t double_tap_count=0;
 

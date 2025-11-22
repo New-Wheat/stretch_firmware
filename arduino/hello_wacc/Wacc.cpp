@@ -139,6 +139,13 @@ void stepWaccRPC()
 {
   toggle_led(500);
   stepTransport(handleNewRPC);
+  // If accel work was requested from TC5 ISR, handle it here (non-ISR context)
+  if (accel_tick) {
+    noInterrupts();
+    accel_tick = false;
+    interrupts();
+    stepAccel();
+  }
   resetWDT();
 }
 
@@ -207,7 +214,9 @@ if (dirty_command)
   else
     digitalWrite(D3, LOW);
 
-  wacc_sensor.updateSensorStatus(stat.sensor);
+  if (!(wacc_sensor.getState() & SENSOR_STANDBY)) {
+    wacc_sensor.updateSensorStatus(stat.sensor);
+  }
   stat.ax=accel_gravity_scale*(stat.ax * accel_LPFa + accel_LPFb*ax);
   stat.ay=accel_gravity_scale*(stat.ay * accel_LPFa + accel_LPFb*ay);
   stat.az=accel_gravity_scale*(stat.az * accel_LPFa + accel_LPFb*az);
@@ -252,10 +261,10 @@ if (dirty_command)
  
 }
 
-void stepWaccController_70Hz()
-{
-    stepAccel();
-}
+// void stepWaccController_70Hz()
+// {
+//     stepAccel();
+// }
 //////////////////////////////////////////////////////
 bool led_on=false;
 unsigned long t_toggle_last=0;
@@ -285,7 +294,8 @@ void TC5_Handler() {
 
   if (TC5->COUNT16.INTFLAG.bit.OVF == 1) 
   {
-    stepWaccController_70Hz();
+    // Request accel processing in main loop instead of calling I2C from ISR
+    accel_tick = true;
     TC5->COUNT16.INTFLAG.bit.OVF = 1;    // writing a one clears the flag ovf flag
   }
 }
